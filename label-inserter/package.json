@@ -2,7 +2,7 @@
   "name": "label-inserter",
   "displayName": "Label inserter",
   "description": "Insert Apia labels",
-  "version": "0.0.4",
+  "version": "0.1.1",
   "engines": {
     "vscode": "^1.91.0"
   },

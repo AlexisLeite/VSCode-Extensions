@@ -3,10 +3,11 @@ import * as vscode from 'vscode';
 async function runCommand(command: string) {
 	const editor = vscode.window.activeTextEditor;
 	if (editor) {
+		const selection = editor.selection;
 		const userInput = await vscode.window.showInputBox({
-			prompt: 'Enter label name'
+			prompt: 'Enter label name',
+			value: editor.document.getText(selection)
 		});
-
 
 		if (userInput !== undefined) {
 			// Add import statement
