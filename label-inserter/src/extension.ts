@@ -42,7 +42,7 @@ async function runCommand(command: string) {
 
 			await editor.edit(async (editBuilder) => {
 				const selection = editor.selection;
-				editBuilder.insert(selection.start, `getLabel('${userInput}').${command}`);
+				editBuilder.replace(selection, `getLabel('${userInput}').${command}`);
 			});
 
 			for await (const e of editors) {
