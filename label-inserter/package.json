@@ -25,6 +25,16 @@
         "command": "label-inserter.addTooltip",
         "title": "[Apia] Add tooltip",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "label-inserter.jspAddText",
+        "title": "[Apia] Add jsp label",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "label-inserter.jspAddTooltip",
+        "title": "[Apia] Add jsp tooltip",
+        "when": "editorTextFocus"
       }
     ]
   },

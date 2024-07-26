@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-async function runCommand(command: string) {
+async function runLabelCommand(command: string) {
 	const editor = vscode.window.activeTextEditor;
 	if (editor) {
 		const selection = editor.selection;
@@ -53,13 +53,56 @@ async function runCommand(command: string) {
 
 	}
 }
+async function runJspLabelCommand(command: string) {
+	const editor = vscode.window.activeTextEditor;
+	if (editor) {
+		const selection = editor.selection;
+		const userInput = await vscode.window.showInputBox({
+			prompt: 'Enter label name',
+			value: editor.document.getText(selection)
+		});
+
+		if (userInput !== undefined) {
+			// Add import statement
+			const document = editor.document;
+			const text = document.getText();
+
+			const editors: ((builder: vscode.TextEditorEdit) => void)[] = [];
+
+			const generalMatch = text.match(/<%@ taglib prefix="system" uri="\/WEB-INF\/system-tags.tld" %>/);
+
+			if (!generalMatch) {
+				editors.push(async (editBuilder) => {
+					const firstLine = document.lineAt(0);
+					await editBuilder.insert(firstLine.range.start, `<%@ taglib prefix="system" uri="/WEB-INF/system-tags.tld" %>\n`);
+				});
+			}
+
+			await editor.edit(async (editBuilder) => {
+				const selection = editor.selection;
+				editBuilder.replace(selection, `<system:label show="${command}" label="${userInput}" />`);
+			});
+
+			for await (const e of editors) {
+				await editor.edit(e);
+			}
+		}
+
+	}
+}
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('label-inserter.addLabel', async () => {
-		await runCommand('text');
+		await runLabelCommand('text');
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('label-inserter.addTooltip', async () => {
-		await runCommand('tooltip');
+		await runLabelCommand('tooltip');
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand('label-inserter.jspAddText', async () => {
+		await runJspLabelCommand('text');
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand('label-inserter.jspAddTooltip', async () => {
+		await runJspLabelCommand('tooltip');
 	}));
 }
 
